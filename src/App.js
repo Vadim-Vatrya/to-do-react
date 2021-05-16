@@ -1,15 +1,17 @@
 import React, { Component } from "react";
-// import shortid from 'shortid';
+import shortid from 'shortid';
 
+import Filter from "./Component/Filter";
 import TodoEditor from "./Component/TodoEditor";
 import Container from "./Component/Container";
 import TodoList from "./Component/TodoList";
 import initialTodos from "./todos.json";
-import shortid from "shortid";
+
 
 class App extends Component {
   state = {
     todos: initialTodos,
+    filter: '',
   };
 
   addTodo = text => {
@@ -28,6 +30,10 @@ class App extends Component {
     this.setState((prevState) => ({
       todos: prevState.todos.filter((todo) => todo.id !== todoId),
     }));
+  };
+
+  changeFilter = e => {
+    this.setState({filter: e.currentTarget.value})
   };
 
   toggleCompleted = (todoId) => {
@@ -54,7 +60,7 @@ class App extends Component {
   // };
 
   render() {
-    const { todos } = this.state;
+    const { todos, filter } = this.state;
     const totalTodoCount = todos.length;
     const completedTodoCounts = todos.reduce(
       (total, todo) => (todo.completed ? total + 1 : total),
@@ -72,6 +78,7 @@ class App extends Component {
           <p>Количество выполненых: {completedTodoCounts} </p>
         </div>
 
+        <Filter value={filter} onChange={this.changeFilter}/>
         <TodoList
           todos={todos}
           onDeleteTodo={this.deleteTodo}
