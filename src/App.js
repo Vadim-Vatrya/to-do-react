@@ -44,28 +44,29 @@ class App extends Component {
     }));
   };
 
-  // toggleCompleted = todoId => {
-  //   this.setState(prevState => ({
-  //     todos: prevState.todos.map(todo => {
-  //       if (todo.id === todoId) {
-  //         return {
-  //           ...todo,
-  //           completed: !todo.completed,
-  //         };
-  //       }
+  getVisibleTodos = () => {
+    const { filter, todos } = this.state;
+    const normalizedFilter = filter.toLowerCase();
 
-  //       return todo;
-  //     }),
-  //   }));
-  // };
+    return todos.filter(todo =>
+      todo.text.toLowerCase().includes(normalizedFilter),
+    );
+  };
+
+  calculateCompletedTodos = () => {
+    const { todos } = this.state;
+
+    return todos.reduce(
+      (total, todo) => (todo.completed ? total + 1 : total),
+      0,
+    );
+  };
 
   render() {
     const { todos, filter } = this.state;
     const totalTodoCount = todos.length;
-    const completedTodoCounts = todos.reduce(
-      (total, todo) => (todo.completed ? total + 1 : total),
-      0
-    );
+    const completedTodoCounts = this.calculateCompletedTodos();
+    const visibleTodos = this.getVisibleTodos();
 
     return (
       <Container>
@@ -80,7 +81,7 @@ class App extends Component {
 
         <Filter value={filter} onChange={this.changeFilter}/>
         <TodoList
-          todos={todos}
+          todos={visibleTodos}
           onDeleteTodo={this.deleteTodo}
           onToggleCompleted={this.toggleCompleted}
         />
