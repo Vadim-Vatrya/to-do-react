@@ -7,14 +7,14 @@ const TodoList = ({ todos, onDeleteTodo, onToggleCompleted }) => (
     {todos.map(({ id, text, completed }) => (
       <li
         key={id}
-        className={classNames("TodoList__item", {
-          "TodoList__item--completed": completed,
+        className={classNames('TodoList__item', {
+          'TodoList__item--completed': completed,
         })}
       >
         <input
           type="checkbox"
           className="TodoList__checkbox"
-          checked="completed"
+          checked={completed}
           onChange={() => onToggleCompleted(id)}
         />
         <p className="TodoList__text">{text}</p>
@@ -23,7 +23,7 @@ const TodoList = ({ todos, onDeleteTodo, onToggleCompleted }) => (
           className="TodoList__btn"
           onClick={() => onDeleteTodo(id)}
         >
-          Delete
+          Удалить
         </button>
       </li>
     ))}
