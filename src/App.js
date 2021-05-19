@@ -5,6 +5,7 @@ import Filter from "./Component/Filter";
 import TodoEditor from "./Component/TodoEditor";
 import Container from "./Component/Container";
 import TodoList from "./Component/TodoList";
+import Modal from './Component/Modal';
 import initialTodos from "./todos.json";
 
 
@@ -12,7 +13,14 @@ class App extends Component {
   state = {
     todos: initialTodos,
     filter: '',
+    showModal: false,
   };
+
+  toggleModal = () => {
+    this.setState(({showModal}) => ({
+      showModal: !showModal
+    }))
+  }
 
   addTodo = text => {
     const todo = {
@@ -80,7 +88,7 @@ class App extends Component {
   }
 
   render() {
-    const { todos, filter } = this.state;
+    const { todos, filter, showModal } = this.state;
     const totalTodoCount = todos.length;
     const completedTodoCounts = this.calculateCompletedTodos();
     const visibleTodos = this.getVisibleTodos();
@@ -88,6 +96,8 @@ class App extends Component {
     return (
       <Container>
         <h1>Состояние компонента</h1>
+        
+        {showModal && <Modal />}
 
         <TodoEditor onSubmit={this.addTodo} />
 
