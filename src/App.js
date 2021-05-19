@@ -62,6 +62,23 @@ class App extends Component {
     );
   };
 
+  componentDidMount = () => {
+    const todos = localStorage.getItem('todos');
+    const parsedTodos = JSON.parse(todos);
+
+    if (parsedTodos) {
+      this.setState({ todos: parsedTodos });
+    }
+  }
+
+  componentDidUpdate = (prevState, prevProps) => {
+
+    if(this.state.todos !== prevState.todos) {
+      localStorage.setItem('todos', JSON.stringify(this.state.todos))
+    }
+
+  }
+
   render() {
     const { todos, filter } = this.state;
     const totalTodoCount = todos.length;
