@@ -1,28 +1,46 @@
 import React, { Component } from "react";
-import shortid from 'shortid';
+import shortid from "shortid";
 
 import Filter from "./Component/Filter";
 import TodoEditor from "./Component/TodoEditor";
 import Container from "./Component/Container";
 import TodoList from "./Component/TodoList";
-import Modal from './Component/Modal';
+import Modal from "./Component/Modal";
 import initialTodos from "./todos.json";
-
+import IconButton from "./Component/IconButton";
+import { ReactComponent as AddIcon } from './icons/add.svg';
 
 class App extends Component {
   state = {
     todos: initialTodos,
-    filter: '',
+    filter: "",
     showModal: false,
   };
 
-  toggleModal = () => {
-    this.setState(({showModal}) => ({
-      showModal: !showModal
-    }))
-  }
+  componentDidMount = () => {
+    const todos = localStorage.getItem("todos");
+    const parsedTodos = JSON.parse(todos);
 
-  addTodo = text => {
+    if (parsedTodos) {
+      this.setState({ todos: parsedTodos });
+    }
+  };
+
+  componentDidUpdate = (prevState, prevProps) => {
+
+    const nextTodos = this.state.todos;
+    const prevTodos = prevState.todos;
+
+    if (nextTodos !== prevTodos) {
+      localStorage.setItem("todos", JSON.stringify(this.state.todos));
+    }
+
+    if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
+      this.toggleModal();
+    }
+  };
+
+  addTodo = (text) => {
     const todo = {
       id: shortid.generate(),
       text,
@@ -32,6 +50,9 @@ class App extends Component {
     this.setState(({ todos }) => ({
       todos: [todo, ...todos],
     }));
+
+    // this.toggleModal();
+    
   };
 
   deleteTodo = (todoId) => {
@@ -40,8 +61,8 @@ class App extends Component {
     }));
   };
 
-  changeFilter = e => {
-    this.setState({filter: e.currentTarget.value})
+  changeFilter = (e) => {
+    this.setState({ filter: e.currentTarget.value });
   };
 
   toggleCompleted = (todoId) => {
@@ -56,8 +77,8 @@ class App extends Component {
     const { filter, todos } = this.state;
     const normalizedFilter = filter.toLowerCase();
 
-    return todos.filter(todo =>
-      todo.text.toLowerCase().includes(normalizedFilter),
+    return todos.filter((todo) =>
+      todo.text.toLowerCase().includes(normalizedFilter)
     );
   };
 
@@ -66,26 +87,15 @@ class App extends Component {
 
     return todos.reduce(
       (total, todo) => (todo.completed ? total + 1 : total),
-      0,
+      0
     );
   };
 
-  componentDidMount = () => {
-    const todos = localStorage.getItem('todos');
-    const parsedTodos = JSON.parse(todos);
-
-    if (parsedTodos) {
-      this.setState({ todos: parsedTodos });
-    }
-  }
-
-  componentDidUpdate = (prevState, prevProps) => {
-
-    if(this.state.todos !== prevState.todos) {
-      localStorage.setItem('todos', JSON.stringify(this.state.todos))
-    }
-
-  }
+  toggleModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
 
   render() {
     const { todos, filter, showModal } = this.state;
@@ -95,18 +105,26 @@ class App extends Component {
 
     return (
       <Container>
-        <h1>Состояние компонента</h1>
-        
-        {showModal && <Modal />}
+      
 
-        <TodoEditor onSubmit={this.addTodo} />
+        <IconButton onClick={this.toggleModal} aria-label="Добавить todo">
+          <AddIcon width="40" height="40" fill="#fff" />
+          </IconButton>
+
+        {showModal && (
+          <Modal>
+             <TodoEditor onSubmit={this.addTodo} />
+          </Modal>
+        )}
+
+       
 
         <div>
           <p>Общее количество: {totalTodoCount} </p>
           <p>Количество выполненых: {completedTodoCounts} </p>
         </div>
 
-        <Filter value={filter} onChange={this.changeFilter}/>
+        <Filter value={filter} onChange={this.changeFilter} />
         <TodoList
           todos={visibleTodos}
           onDeleteTodo={this.deleteTodo}
