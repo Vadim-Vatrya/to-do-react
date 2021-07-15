@@ -8,7 +8,7 @@ import TodoList from "./Component/TodoList";
 import Modal from "./Component/Modal";
 import initialTodos from "./todos.json";
 import IconButton from "./Component/IconButton";
-import { ReactComponent as AddIcon } from './icons/add.svg';
+import { ReactComponent as AddIcon } from "./icons/add.svg";
 
 class App extends Component {
   state = {
@@ -27,7 +27,6 @@ class App extends Component {
   };
 
   componentDidUpdate = (prevState, prevProps) => {
-
     const nextTodos = this.state.todos;
     const prevTodos = prevState.todos;
 
@@ -35,9 +34,9 @@ class App extends Component {
       localStorage.setItem("todos", JSON.stringify(this.state.todos));
     }
 
-    if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
-      this.toggleModal();
-    }
+    // if (nextTodos.length > prevTodos.length && prevTodos.length !== 0) {
+    //   this.toggleModal();
+    // }
   };
 
   addTodo = (text) => {
@@ -52,7 +51,6 @@ class App extends Component {
     }));
 
     // this.toggleModal();
-    
   };
 
   deleteTodo = (todoId) => {
@@ -105,19 +103,15 @@ class App extends Component {
 
     return (
       <Container>
-      
-
         <IconButton onClick={this.toggleModal} aria-label="Добавить todo">
           <AddIcon width="40" height="40" fill="#fff" />
-          </IconButton>
+        </IconButton>
 
         {showModal && (
           <Modal>
-             <TodoEditor onSubmit={this.addTodo} />
+            <TodoEditor onSubmit={this.addTodo} />
           </Modal>
         )}
-
-       
 
         <div>
           <p>Общее количество: {totalTodoCount} </p>
